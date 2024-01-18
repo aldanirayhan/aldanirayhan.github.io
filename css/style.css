@@ -1,37 +1,86 @@
-.container {
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
     width: 100%;
-    background: red;
-    display: flex;
-    flex-direction: column;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
-.input {
-    /* width: 80%; */
-    padding: 5px;
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.btn {
-    padding: 5px;
-    min-width: 30px;
+button:hover {
+    background-color: #45a049;
 }
 
-.btn-ac {
-    min-width: 60px !important;
+#resultContainer {
+    display: none;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
 }
 
-@media only screen and (max-width: 600px) {
-    .container {
-        background: blue;
-        display: flex;
-        flex-direction: column-revese;
-    }
+#resultContainer h2 {
+    text-align: center;
+    margin-bottom: 10px;
 }
 
-@media only screen and (max-width: 250px) {
-    .container {
-        width: 100%;
-        background: green;
-        display: flex;
-        flex-direction: column;
-    }
+#areaResult, #perimeterResult {
+    font-weight: bold;
+}
+
+#areaValue, #perimeterValue {
+    color: #3498db;
+}
+
+/* Gaya untuk persegi saat di-hover */
+.square {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #4caf50;
+    border-radius: 5px;
+    margin: 20px auto;
+    transition: border-color 0.5s ease; /* Efek transisi untuk perubahan warna border */
+}
+
+.square:hover {
+    border-color: #3498db; /* Warna border saat di-hover */
+}
+
+.btnHitung {
+    margin-bottom: 10px;
 }
