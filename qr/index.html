@@ -9,146 +9,7 @@
       rel="stylesheet"
     />
     <script src="https://unpkg.com/html5-qrcode"></script>
-    <style>
-      :root {
-        --color-bg: #f4f4f4;
-        --color-fg: #111111;
-        --color-accent: #00c853;
-        --color-border: #000000;
-        --color-panel-bg: #d2f8d2;
-        --font: 'Sora', sans-serif;
-        --danger: #ff3d00;
-      }
-
-      body {
-        font-family: var(--font);
-        background: var(--color-bg);
-        color: var(--color-fg);
-        margin: 0;
-        padding: 0;
-        background-image: radial-gradient(#444 1px, transparent 0);
-        background-size: 20px 20px;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .wrapper {
-        background: var(--color-panel-bg);
-        border: 4px solid var(--color-border);
-        padding: 2rem;
-        width: 350px;
-        box-shadow: 10px 10px 0 var(--color-border);
-        text-align: center;
-      }
-
-      h1 {
-        font-size: 1.8rem;
-        color: var(--color-accent);
-        margin-bottom: 1rem;
-      }
-
-      #reader {
-        width: 100%;
-        background: #000;
-        border: 3px solid var(--color-border);
-        box-shadow: 6px 6px 0 var(--color-border);
-        border-radius: 8px;
-        margin-bottom: 1.2rem;
-        display: none; /* awalnya disembunyiin */
-      }
-
-      button {
-        display: block;
-        width: 100%;
-        border: 3px solid var(--color-border);
-        background: var(--color-accent);
-        color: #fff;
-        font-weight: bold;
-        font-size: 1.1rem;
-        padding: 0.75rem;
-        margin-top: 0.75rem;
-        /* border-radius: 8px; */
-        cursor: pointer;
-        box-shadow: 6px 6px 0 var(--color-border);
-        transition: transform 0.1s;
-      }
-
-      button:hover {
-        transform: scale(1.03);
-        background: var(--danger);
-      }
-
-      #stop-scan {
-        background: var(--danger);
-        display: none;
-      }
-
-      .btn-gallery {
-        background: var(--color-fg);
-        color: #fff;
-      }
-
-      .copy-right {
-        font-size: 0.8rem;
-        margin-top: 1.5rem;
-        color: #333;
-      }
-
-      .copy-right a {
-        color: var(--color-accent);
-        text-decoration: none;
-        font-weight: bold;
-      }
-
-      .divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        margin: 1rem 0;
-        font-weight: 700;
-        color: #666;
-      }
-
-      .divider::before,
-      .divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 3px solid var(--color-border);
-        box-shadow: 2px 2px 0 var(--color-border);
-      }
-
-      .divider:not(:empty)::before {
-        margin-right: 0.75em;
-      }
-
-      .divider:not(:empty)::after {
-        margin-left: 0.75em;
-      }
-
-      .divider span {
-        background: var(--color-panel-bg);
-        padding: 0 0.5rem;
-        border: 2px solid var(--color-border);
-        box-shadow: 3px 3px 0 var(--color-border);
-        font-size: 0.9rem;
-      }
-
-      @keyframes pulseText {
-        0%,
-        100% {
-          letter-spacing: 1px;
-        }
-        50% {
-          letter-spacing: 2px;
-        }
-      }
-
-      input[type='file'] {
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
@@ -158,22 +19,19 @@
           >QR Voucher Scanner</span
         >
       </h2>
-      <p>Izinkan kamera untuk memindai kode QR dari voucher kamu.</p>
 
       <div id="reader"></div>
 
-      <button id="start-scan">📷 Mulai Scan dengan kamera</button>
-      <button id="stop-scan">⛔ Berhenti Scan</button>
-      <div class="divider">
-        <span>atau</span>
+      <div id="scan-frame">
+        <div class="corner tl">~</div>
+        <div class="corner tr">~</div>
+        <p>Izinkan kamera untuk memindai kode QR dari voucher bukomar.net</p>
+        <div class="corner bl">~</div>
+        <div class="corner br">~</div>
       </div>
 
-      <button>
-        <label for="qr-file">
-          <span style="font-weight: bold">🖼️ Pilih Gambar dari Galeri :</span>
-        </label>
-      </button>
-      <input type="file" id="qr-file" accept="image/*" />
+      <button id="start-scan">📷 Mulai Scan dengan kamera</button>
+      <button id="stop-scan">⛔ Berhenti Scan</button>
 
       <p class="copy-right">© 2025 <a href="#">Warung Bu Komar</a> ⚡</p>
     </div>
@@ -184,12 +42,19 @@
       const startBtn = document.getElementById('start-scan');
       const stopBtn = document.getElementById('stop-scan');
       const fileInput = document.getElementById('qr-file');
+      const scanFrame = document.getElementById('scan-frame');
 
       startBtn.addEventListener('click', async () => {
         const cameras = await Html5Qrcode.getCameras();
         if (cameras && cameras.length) {
           reader.style.display = 'block';
-          const cameraId = cameras[0].id;
+          scanFrame.style.display = 'none'; // sembunyikan frame
+          // Prioritaskan kamera belakang kalau ada
+          const backCam = cameras.find((cam) =>
+            cam.label.toLowerCase().includes('back')
+          );
+          const cameraId = backCam ? backCam.id : cameras[0].id;
+
           html5QrCode.start(
             cameraId,
             { fps: 10, qrbox: 250 },
@@ -207,23 +72,10 @@
       stopBtn.addEventListener('click', () => {
         html5QrCode.stop().then(() => {
           reader.style.display = 'none';
+          scanFrame.style.display = 'block'; // tampilkan frame lagi
           startBtn.style.display = 'inline-block';
           stopBtn.style.display = 'none';
         });
-      });
-
-      fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        html5QrCode
-          .scanFile(file, true)
-          .then((decodedText) => {
-            window.location.href = decodedText;
-          })
-          .catch((err) => {
-            alert('Gagal membaca gambar QR! ⚠️');
-            console.error(err);
-          });
       });
     </script>
   </body>
